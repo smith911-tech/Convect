@@ -1,0 +1,13 @@
+{
+  "name": "Convect",
+  "id": "1453740958025540772",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html"
+}

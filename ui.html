@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .error {
+        color: red;
+        margin-top: 10px;
+      }
+      #progress { 
+        width: 100%;
+        height: 20px;
+        background: #f3f3f3;
+        margin-top: 10px;
+      }
+      #progress-bar {
+        height: 100%;
+        width: 0%; 
+        background: #4caf50;
+      }
+      .slider-container {
+        margin-top: 20px;
+      }
+      .slider-container label {
+        display: block;
+      }
+      .slider-container input {
+        width: 100%;
+      }
+    </style>
+
+    <!-- Include ImageTracer -->
+    <script src="https://cdn.jsdelivr.net/gh/jankovicsandras/imagetracerjs/imagetracer_v1.2.6.js"></script>
+  </head> 
+
+  <body>
+    <h3>Convert Image to Vector (SVG)</h3>
+    <input type="file" id="file-input" accept=".png,.jpg,.jpeg" />
+    <button id="convert-btn" disabled>Convert & Insert</button>
+    <div id="error-message" class="error"></div>
+    <div id="progress">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Customization Options -->
+    <div class="slider-container">
+      <label for="ltres"> Detail Level: <span id="ltres-value">1</span></label>
+      <input type="range" id="ltres" min="0" max="10" value="1" step="0.1">
+    </div>
+
+    <div class="slider-container">
+      <label for="qtres">Smoothness: <span id="qtres-value">1</span></label>
+      <input type="range" id="qtres" min="0" max="10" value="1" step="0.1">
+    </div>
+
+    <script>
+      const fileInput = document.getElementById("file-input");
+      const convertBtn = document.getElementById("convert-btn");
+      const errorMessage = document.getElementById("error-message");
+      const progressBar = document.getElementById("progress-bar");
+
+      const ltresSlider = document.getElementById("ltres");
+      const qtresSlider = document.getElementById("qtres");
+      const ltresValue = document.getElementById("ltres-value");
+      const qtresValue = document.getElementById("qtres-value");
+
+      // Update slider values display
+      ltresSlider.addEventListener("input", () => {
+        ltresValue.textContent = ltresSlider.value;
+      });
+      qtresSlider.addEventListener("input", () => {
+        qtresValue.textContent = qtresSlider.value;
+      });
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        const validFormats = ["image/png", "image/jpeg"];
+
+        if (file && validFormats.includes(file.type)) {
+          errorMessage.textContent = "";
+          convertBtn.disabled = false;
+        } else {
+          errorMessage.textContent = "Upload PNG or JPEG.";
+          convertBtn.disabled = true;
+        }
+      });
+
+      convertBtn.addEventListener("click", () => {
+        const file = fileInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = () => {
+              // Load the image to a canvas
+              const canvas = document.createElement("canvas");
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0);
+
+              // Get ImageData
+              const imgData = ImageTracer.getImgdata(canvas);
+
+              let progress = 0;
+
+              // Convert ImageData to SVG with customizable options
+              const svgstr = ImageTracer.imagedataToSVG(imgData, {
+                scale: 5, // Scaling factor
+                ltres: parseFloat(ltresSlider.value), // Lower threshold (more details)
+                qtres: parseFloat(qtresSlider.value), // Quadratic spline threshold (smoother)
+                pathomit: 8, // Ignore small artifacts
+                stepcallback: function () {
+                  progress += 10;
+                  progressBar.style.width = Math.min(progress, 100) + "%";
+                },
+              });
+
+              // Send SVG back to Figma
+              parent.postMessage(
+                {
+                  pluginMessage: {
+                    type: "upload",
+                    data: svgstr,
+                    format: "svg",
+                  },
+                },
+                "*"
+              );
+
+              progressBar.style.width = "100%";
+            };
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+  </body>
+</html>
