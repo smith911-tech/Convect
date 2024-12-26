@@ -4,130 +4,296 @@
     <style>
       body {
         font-family: Arial, sans-serif;
+        background: #1e1e1e;
+        color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        box-sizing: border-box;
+      }
+
+      .plugin-container {
+        background: #2a2a2a;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
         padding: 20px;
+        width: 400px;
+        text-align: center;
       }
-      button {
-        margin-top: 10px;
-        padding: 10px;
+
+      .file-input-container {
+        border: 2px dashed #6a0dad;
+        border-radius: 8px;
+        padding: 20px;
+        background: #3a3a3a;
         cursor: pointer;
+        transition: background-color 0.3s;
+        position: relative;
       }
-      .error {
-        color: red;
+
+      .file-input-container:hover {
+        background: #4a4a4a;
+      }
+
+      .file-input-container.dragover {
+        background: #6a0dad;
+        color: #fff;
+      }
+
+      .file-input-container input[type="file"] {
+        display: none;
+      }
+
+      .file-input-container p {
+        margin: 0;
+        color: #c9c9ff;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .file-name {
         margin-top: 10px;
+        color: #fff;
+        font-size: 14px;
       }
-      #progress { 
-        width: 100%;
-        height: 20px;
-        background: #f3f3f3;
-        margin-top: 10px;
-      }
-      #progress-bar {
-        height: 100%;
-        width: 0%; 
-        background: #4caf50;
-      }
+
       .slider-container {
-        margin-top: 20px;
+        margin: 20px 0;
+        text-align: left;
       }
+
       .slider-container label {
+        font-size: 14px;
         display: block;
+        margin-bottom: 5px;
       }
-      .slider-container input {
+
+      .slider-container input[type="range"] {
         width: 100%;
+      }
+
+      .dropdown-container {
+        margin: 20px 0;
+        text-align: left;
+      }
+
+      .progress-bar {
+        background: #444;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 20px;
+        margin: 10px 0;
+      }
+
+      .progress-bar-inner {
+        background: #6a0dad;
+        width: 0%;
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      button {
+        background: #6a0dad;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background: #571a96;
+      }
+
+      .contact-btn {
+        margin-top: 10px;
+        background: #007bff;
+      }
+
+      .contact-btn:hover {
+        background: #0056b3;
+      }
+
+      .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #888;
+      }
+
+      .twitter-link {
+        color: #007bff;
+        cursor: pointer;
+        text-decoration: underline;
       }
     </style>
-
-    <!-- Include ImageTracer -->
     <script src="https://cdn.jsdelivr.net/gh/jankovicsandras/imagetracerjs/imagetracer_v1.2.6.js"></script>
-  </head> 
-
+  </head>
   <body>
-    <h3>Convert Image to Vector (SVG)</h3>
-    <input type="file" id="file-input" accept=".png,.jpg,.jpeg" />
-    <button id="convert-btn" disabled>Convert & Insert</button>
-    <div id="error-message" class="error"></div>
-    <div id="progress">
-      <div id="progress-bar"></div>
-    </div>
+    <div class="plugin-container">
+      <div
+        class="file-input-container"
+        id="drop-zone"
+        onclick="fileInput.click()"
+      >
+        <input type="file" id="file-input" accept=".png,.jpg,.jpeg" />
+        <p>Click or Drag & Drop to Upload a File</p>
+        <div class="file-name" id="file-name"></div>
+      </div>
 
-    <!-- Customization Options -->
-    <div class="slider-container">
-      <label for="ltres"> Detail Level: <span id="ltres-value">1</span></label>
-      <input type="range" id="ltres" min="0" max="10" value="1" step="0.1">
-    </div>
+      <div class="progress-bar">
+        <div class="progress-bar-inner" id="progress-bar"></div>
+      </div>
 
-    <div class="slider-container">
-      <label for="qtres">Smoothness: <span id="qtres-value">1</span></label>
-      <input type="range" id="qtres" min="0" max="10" value="1" step="0.1">
+      <div class="slider-container">
+        <label for="ltres">Detail Level: <span id="ltres-value">5</span></label>
+        <input type="range" id="ltres" min="0" max="10" value="5" step="1" />
+      </div>
+
+      <div class="slider-container">
+        <label for="qtres"
+          >Curve Precision: <span id="qtres-value">0.05</span></label
+        >
+        <input
+          type="range"
+          id="qtres"
+          min="0.01"
+          max="1"
+          value="0.5"
+          step="0.01"
+        />
+      </div>
+
+      <div class="dropdown-container">
+        <label for="numberofcolors">Number of Colors:</label>
+        <select id="numberofcolors">
+          <option value="2">2</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+          <option value="10" selected>10</option>
+        </select>
+      </div>
+
+      <button id="convert-btn" disabled>Convert & Insert</button>
+      <button
+        class="contact-btn"
+        onclick="openLink('mailto:josephpay911@gmail.com')"
+      >
+        Contact Me
+      </button>
+
+      <div class="footer">
+        Figma Plugin by
+        <span
+          class="twitter-link"
+          onclick="openLink(`https://twitter.com/TheRealJoseph01`)"
+          >@TheRealJoseph01</span
+        >
+      </div>
     </div>
 
     <script>
+      function openLink(url) {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "open-url",
+              url: url,
+            },
+          },
+          "*"
+        );
+      }
+
       const fileInput = document.getElementById("file-input");
       const convertBtn = document.getElementById("convert-btn");
-      const errorMessage = document.getElementById("error-message");
       const progressBar = document.getElementById("progress-bar");
-
+      const dropZone = document.getElementById("drop-zone");
+      const fileNameDisplay = document.getElementById("file-name");
       const ltresSlider = document.getElementById("ltres");
       const qtresSlider = document.getElementById("qtres");
+      const numberOfColorsSelect = document.getElementById("numberofcolors");
       const ltresValue = document.getElementById("ltres-value");
       const qtresValue = document.getElementById("qtres-value");
 
-      // Update slider values display
       ltresSlider.addEventListener("input", () => {
         ltresValue.textContent = ltresSlider.value;
       });
+
       qtresSlider.addEventListener("input", () => {
         qtresValue.textContent = qtresSlider.value;
       });
 
-      fileInput.addEventListener("change", () => {
-        const file = fileInput.files[0];
+      function handleFile(file) {
         const validFormats = ["image/png", "image/jpeg"];
+        fileNameDisplay.textContent = file ? `Selected File: ${file.name}` : "";
 
         if (file && validFormats.includes(file.type)) {
-          errorMessage.textContent = "";
           convertBtn.disabled = false;
         } else {
-          errorMessage.textContent = "Upload PNG or JPEG.";
+          alert("Please upload a PNG or JPEG file.");
           convertBtn.disabled = true;
         }
+      }
+
+      fileInput.addEventListener("change", (event) => {
+        handleFile(event.target.files[0]);
+      });
+
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("dragover");
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
+        handleFile(file);
       });
 
       convertBtn.addEventListener("click", () => {
         const file = fileInput.files[0];
         if (file) {
           const reader = new FileReader();
-
           reader.onload = (event) => {
             const img = new Image();
             img.src = event.target.result;
 
             img.onload = () => {
-              // Load the image to a canvas
               const canvas = document.createElement("canvas");
               canvas.width = img.width;
               canvas.height = img.height;
               const ctx = canvas.getContext("2d");
               ctx.drawImage(img, 0, 0);
 
-              // Get ImageData
               const imgData = ImageTracer.getImgdata(canvas);
 
               let progress = 0;
 
-              // Convert ImageData to SVG with customizable options
               const svgstr = ImageTracer.imagedataToSVG(imgData, {
-                scale: 5, // Scaling factor
-                ltres: parseFloat(ltresSlider.value), // Lower threshold (more details)
-                qtres: parseFloat(qtresSlider.value), // Quadratic spline threshold (smoother)
-                pathomit: 8, // Ignore small artifacts
-                stepcallback: function () {
-                  progress += 10;
-                  progressBar.style.width = Math.min(progress, 100) + "%";
-                },
+                scale: 1,
+                ltres: 0.3,
+                qtres: 0.00001,
+                pathomit: 20, // Eliminate small noise paths
+                rightangleenhance: false, // Allow natural curves without sharp corners
+                curveaccuracy: 5.0, // Higher precision for smoother curves
+                colorsampling: 0, // Disable color sampling for cleaner gradients
+                numberofcolors: parseInt(numberOfColorsSelect.value),
+                strokewidth: 0, // No stroke for clean shapes
+                linefilter: true, // Enable filtering to remove noise and artifacts
               });
 
-              // Send SVG back to Figma
               parent.postMessage(
                 {
                   pluginMessage: {
