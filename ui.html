@@ -32,6 +32,7 @@
         cursor: pointer;
         transition: background-color 0.3s;
         position: relative;
+        height: 250px; 
       }
 
       .file-input-container:hover {
@@ -49,6 +50,7 @@
 
       .file-input-container p {
         margin: 0;
+        margin-top: 125px;
         color: #c9c9ff;
         font-size: 16px;
         font-weight: bold;
@@ -149,44 +151,9 @@
         <div class="progress-bar-inner" id="progress-bar"></div>
       </div>
 
-      <div class="slider-container">
-        <label for="ltres">Detail Level: <span id="ltres-value">5</span></label>
-        <input type="range" id="ltres" min="0" max="10" value="5" step="1" />
-      </div>
-
-      <div class="slider-container">
-        <label for="qtres"
-          >Curve Precision: <span id="qtres-value">0.05</span></label
-        >
-        <input
-          type="range"
-          id="qtres"
-          min="0.01"
-          max="1"
-          value="0.5"
-          step="0.01"
-        />
-      </div>
-
-      <div class="dropdown-container">
-        <label for="numberofcolors">Number of Colors:</label>
-        <select id="numberofcolors">
-          <option value="2">2</option>
-          <option value="4">4</option>
-          <option value="6">6</option>
-          <option value="8">8</option>
-          <option value="10" selected>10</option>
-        </select>
-      </div>
 
       <button id="convert-btn" disabled>Convert & Insert</button>
-      <button
-        class="contact-btn"
-        onclick="openLink('mailto:josephpay911@gmail.com')"
-      >
-        Contact Me
-      </button>
-
+ 
       <div class="footer">
         Figma Plugin by
         <span
@@ -215,19 +182,7 @@
       const progressBar = document.getElementById("progress-bar");
       const dropZone = document.getElementById("drop-zone");
       const fileNameDisplay = document.getElementById("file-name");
-      const ltresSlider = document.getElementById("ltres");
-      const qtresSlider = document.getElementById("qtres");
-      const numberOfColorsSelect = document.getElementById("numberofcolors");
-      const ltresValue = document.getElementById("ltres-value");
-      const qtresValue = document.getElementById("qtres-value");
 
-      ltresSlider.addEventListener("input", () => {
-        ltresValue.textContent = ltresSlider.value;
-      });
-
-      qtresSlider.addEventListener("input", () => {
-        qtresValue.textContent = qtresSlider.value;
-      });
 
       function handleFile(file) {
         const validFormats = ["image/png", "image/jpeg"];
