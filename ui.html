@@ -282,16 +282,24 @@
               let progress = 0;
 
               const svgstr = ImageTracer.imagedataToSVG(imgData, {
-                scale: 1,
-                ltres: 0.3,
-                qtres: 0.00001,
-                pathomit: 20, // Eliminate small noise paths
-                rightangleenhance: false, // Allow natural curves without sharp corners
-                curveaccuracy: 5.0, // Higher precision for smoother curves
-                colorsampling: 0, // Disable color sampling for cleaner gradients
-                numberofcolors: parseInt(numberOfColorsSelect.value),
-                strokewidth: 0, // No stroke for clean shapes
-                linefilter: true, // Enable filtering to remove noise and artifacts
+                ltres: 0.001, // Extremely high precision for straight lines
+                qtres: 0.001, // Extremely high precision for curves
+                pathomit: 20, // Omit small particles and noise
+                rightangleenhance: true, // Sharpen right angles for logos
+                colorsampling: 0, // Fixed palette for consistent results
+                numberofcolors: 120, // Black and white only (ideal for logo-like images)
+                colorquantcycles: 5, // Additional color quantization for accuracy
+                layering: 1, // Advanced layering for clearer details
+                strokewidth: 1, // Standard stroke width for clean lines
+                linefilter: true, // Smoothens and simplifies paths
+                scale: 1, // Maintain original scale
+                roundcoords: 3, // Precise coordinates for better accuracy
+                viewbox: true, // Add SVG viewbox for responsiveness
+                desc: true, // Include metadata description
+                lcpr: 0, // Maximize linear curve precision
+                qcpr: 0, // Maximize quadratic curve precision
+                blurradius: 0, // No blur for sharp logos
+                blurdelta: 0, // No blur adjustments
               });
 
               parent.postMessage(
