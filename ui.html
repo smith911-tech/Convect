@@ -32,7 +32,7 @@
         cursor: pointer;
         transition: background-color 0.3s;
         position: relative;
-        height: 250px; 
+        height: 250px;
       }
 
       .file-input-container:hover {
@@ -151,9 +151,8 @@
         <div class="progress-bar-inner" id="progress-bar"></div>
       </div>
 
-
       <button id="convert-btn" disabled>Convert & Insert</button>
- 
+
       <div class="footer">
         Figma Plugin by
         <span
@@ -182,7 +181,6 @@
       const progressBar = document.getElementById("progress-bar");
       const dropZone = document.getElementById("drop-zone");
       const fileNameDisplay = document.getElementById("file-name");
-
 
       function handleFile(file) {
         const validFormats = ["image/png", "image/jpeg"];
